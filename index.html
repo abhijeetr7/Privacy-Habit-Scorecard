@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Habit Scorecard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN for Radar Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <!-- Luxide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom font for better aesthetics */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Hide elements initially that are controlled by JS */
+        #results-section {
+            display: none;
+        }
+        #question-section {
+            display: block; /* Default to showing question section */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 flex items-center justify-center p-4 sm:p-6 text-gray-800">
+    <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-2xl border border-gray-200">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-indigo-800 mb-6">
+            📡 Privacy Habit Scorecard
+        </h1>
+
+        <!-- Question Section -->
+        <div id="question-section" class="transition-opacity duration-500 ease-in-out opacity-100">
+            <p class="text-lg sm:text-xl text-center text-gray-700 mb-8 leading-relaxed">
+                Answer the following questions to assess your online privacy habits.
+            </p>
+            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5 sm:p-6 mb-8 flex flex-col items-center text-center">
+                <div id="question-icon" class="text-indigo-600 mb-3">
+                    <!-- Icon will be inserted here by JavaScript -->
+                </div>
+                <p id="question-text" class="text-xl sm:text-2xl font-semibold text-indigo-800 mb-4">
+                    <!-- Question text will be inserted here by JavaScript -->
+                </p>
+                <div class="flex space-x-4 sm:space-x-6">
+                    <button id="yes-button" class="flex items-center px-6 py-3 bg-green-500 text-white font-bold rounded-full shadow-lg hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300 transition transform hover:scale-105">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle w-5 h-5 mr-2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> Yes
+                    </button>
+                    <button id="no-button" class="flex items-center px-6 py-3 bg-red-500 text-white font-bold rounded-full shadow-lg hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 transition transform hover:scale-105">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle w-5 h-5 mr-2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg> No
+                    </button>
+                </div>
+            </div>
+            <div id="question-progress" class="text-center text-sm text-gray-500">
+                <!-- Progress text will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="transition-opacity duration-500 ease-in-out opacity-0">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center text-indigo-700 mb-6">
+                Your Privacy Score:
+            </h2>
+            <div class="text-center mb-8">
+                <span id="score-display" class="text-5xl sm:text-6xl font-extrabold text-indigo-900">
+                    <!-- Score will be inserted here by JavaScript -->
+                </span>
+                <span id="max-score-display" class="text-2xl sm:text-3xl text-gray-600">
+                    <!-- Max score will be inserted here by JavaScript -->
+                </span>
+                <p class="text-lg text-gray-600 mt-2">
+                    (A higher score indicates better privacy habits)
+                </p>
+            </div>
+
+            <!-- Radar Chart -->
+            <h3 class="text-xl sm:text-2xl font-semibold text-center text-indigo-700 mb-4">
+                Strengths & Risks Overview
+            </h3>
+            <div class="bg-gray-50 rounded-xl p-4 mb-8 h-80 sm:h-96 flex items-center justify-center">
+                <canvas id="radarChart"></canvas>
+            </div>
+
+            <!-- Personalized Tips -->
+            <div id="tips-section">
+                <!-- Tips will be inserted here by JavaScript -->
+            </div>
+
+            <div class="text-center">
+                <button id="reset-button" class="flex items-center justify-center mx-auto px-8 py-3 bg-indigo-600 text-white font-bold rounded-full shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition transform hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-refresh-cw w-5 h-5 mr-2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg> Start Over
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Define the questions for the scorecard
+        const questionsData = [
+            {
+                id: 'q1',
+                question: 'Do you use unique, strong passwords (at least 12 characters, mixed case, numbers, symbols) for all your online accounts?',
+                category: 'Passwords & Authentication',
+                riskValue: 5, // Higher risk if not done
+                tip: 'Use a password manager (e.g., LastPass, 1Password, Bitwarden) to generate and store unique, strong passwords. Never reuse passwords across different services.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock w-5 h-5 text-indigo-600"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+            },
+            {
+                id: 'q2',
+                question: 'Do you enable two-factor authentication (2FA) or multi-factor authentication (MFA) wherever possible?',
+                category: 'Passwords & Authentication',
+                riskValue: 5,
+                tip: 'Enable 2FA/MFA on all accounts that support it, especially for email, banking, and social media. Authenticator apps are generally more secure than SMS codes.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock w-5 h-5 text-indigo-600"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+            },
+            {
+                id: 'q3',
+                question: 'Do you regularly review and adjust privacy settings on social media, apps, and other online services?',
+                category: 'Data Sharing & Privacy Settings',
+                riskValue: 4,
+                tip: 'Periodically check the privacy settings of your social media accounts and other apps. Limit who can see your posts, personal information, and location data.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings w-5 h-5 text-green-600"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.78 1.28a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.74v.44a2 2 0 0 1-2 2v.18a2 2 0 0 0-1 1.73l-.43.25a2 2 0 0 0 0 2l.15.08a2 2 0 0 1 2.73.73l.78 1.28a2 2 0 0 0-.73 2.73l-.15.08a2 2 0 0 1-1.74 1H2a2 2 0 0 0-2 2v.44a2 2 0 0 0 2 2h.18a2 2 0 0 1 1.73 1l.25.43a2 2 0 0 1 0 2l-.08.15a2 2 0 0 0 .73 2.73l1.28.78a2 2 0 0 0 2.73-.73l.08-.15a2 2 0 0 1 1.74-1h.44a2 2 0 0 1 2 2v.18a2 2 0 0 0 1.73 1l.25.43a2 2 0 0 0 2 0l.15-.08a2 2 0 0 1 2.73-.73l.78-1.28a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.44a2 2 0 0 1 2-2h.18a2 2 0 0 0 1.73-1l.25-.43a2 2 0 0 0 0-2l-.08-.15a2 2 0 0 1-.73-2.73l-1.28-.78a2 2 0 0 0-2.73.73l-.08.15a2 2 0 0 1-1.74 1H22a2 2 0 0 0-2-2v-.44a2 2 0 0 0-2-2h-.18a2 2 0 0 1-1.73-1l-.25-.43a2 2 0 0 0-2-0l-.15.08a2 2 0 0 1-2.73-.73l-.78-1.28a2 2 0 0 0 .73-2.73l.15-.08a2 2 0 0 1 1-1.74V4a2 2 0 0 0 2-2h-.44z"/><circle cx="12" cy="12" r="3"/></svg>',
+            },
+            {
+                id: 'q4',
+                question: 'Do you avoid clicking on suspicious links or opening attachments from unknown senders (phishing awareness)?',
+                category: 'Online Behavior & Awareness',
+                riskValue: 4,
+                tip: 'Be wary of unsolicited emails, messages, or pop-ups. Always verify the sender and the legitimacy of links before clicking. If in doubt, delete it.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb w-5 h-5 text-yellow-600"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 6c0 1.8.7 3.3 1.5 4.5 1 .8 1.5 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/><path d="M11 17H7c-2.76 0-5 2.24-5 5h14c0-2.76-2.24-5-5-5z"/></svg>',
+            },
+            {
+                id: 'q5',
+                question: 'Do you use a Virtual Private Network (VPN) when connecting to public Wi-Fi networks?',
+                category: 'Network Security',
+                riskValue: 3,
+                tip: 'A VPN encrypts your internet connection, protecting your data from snoopers on public Wi-Fi. Choose a reputable VPN provider.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wifi w-5 h-5 text-blue-600"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.65a10 10 0 0 1 14 0"/><path d="M8 16.47a5 5 0 0 1 8 0"/></svg>',
+            },
+            {
+                id: 'q6',
+                question: 'Do you keep your operating system, web browser, and all software applications updated to the latest versions?',
+                category: 'Device & Software Security',
+                riskValue: 4,
+                tip: 'Software updates often include critical security patches that fix vulnerabilities. Enable automatic updates whenever possible.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield w-5 h-5 text-red-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+            },
+            {
+                id: 'q7',
+                question: 'Do you regularly clear your browser\'s cookies, cache, and browsing history?',
+                category: 'Data Sharing & Privacy Settings',
+                riskValue: 2,
+                tip: 'Clearing browser data can reduce tracking and improve privacy. Consider using browser extensions that automatically clear data or block trackers.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings w-5 h-5 text-green-600"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.78 1.28a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.74v.44a2 2 0 0 1-2 2v.18a2 2 0 0 0-1 1.73l-.43.25a2 2 0 0 0 0 2l.15.08a2 2 0 0 1 2.73.73l.78 1.28a2 2 0 0 0-.73 2.73l-.15.08a2 2 0 0 1-1.74 1H2a2 2 0 0 0-2 2v.44a2 2 0 0 0 2 2h.18a2 2 0 0 1 1.73 1l.25.43a2 2 0 0 1 0 2l-.08.15a2 2 0 0 0 .73 2.73l1.28.78a2 2 0 0 0 2.73-.73l.08-.15a2 2 0 0 1 1.74-1h.44a2 2 0 0 1 2 2v.18a2 2 0 0 0 1.73 1l.25.43a2 2 0 0 0 2 0l.15-.08a2 2 0 0 1 2.73-.73l.78-1.28a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.44a2 2 0 0 1 2-2h.18a2 2 0 0 0 1.73-1l.25-.43a2 2 0 0 0 0-2l-.08-.15a2 2 0 0 1-.73-2.73l-1.28-.78a2 2 0 0 0-2.73.73l-.08.15a2 2 0 0 1-1.74 1H22a2 2 0 0 0-2-2v-.44a2 2 0 0 0-2-2h-.18a2 2 0 0 1-1.73-1l-.25-.43a2 2 0 0 0-2-0l-.15.08a2 2 0 0 1-2.73-.73l-.78-1.28a2 2 0 0 0 .73-2.73l.15-.08a2 2 0 0 1 1-1.74V4a2 2 0 0 0 2-2h-.44z"/><circle cx="12" cy="12" r="3"/></svg>',
+            },
+            {
+                id: 'q8',
+                question: 'Do you limit the personal information you share on public profiles and online forums?',
+                category: 'Data Sharing & Privacy Settings',
+                riskValue: 3,
+                tip: 'Think twice before sharing sensitive personal details (e.g., full birth date, home address, phone number) publicly. Less is more when it comes to online exposure.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings w-5 h-5 text-green-600"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.78 1.28a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.74v.44a2 2 0 0 1-2 2v.18a2 2 0 0 0-1 1.73l-.43.25a2 2 0 0 0 0 2l.15.08a2 2 0 0 1 2.73.73l.78 1.28a2 2 0 0 0-.73 2.73l-.15.08a2 2 0 0 1-1.74 1H2a2 2 0 0 0-2 2v.44a2 2 0 0 0 2 2h.18a2 2 0 0 1 1.73 1l.25.43a2 2 0 0 1 0 2l-.08.15a2 2 0 0 0 .73 2.73l1.28.78a2 2 0 0 0 2.73-.73l.08-.15a2 2 0 0 1 1.74-1h.44a2 2 0 0 1 2 2v.18a2 2 0 0 0 1.73 1l.25.43a2 2 0 0 0 2 0l.15-.08a2 2 0 0 1 2.73-.73l.78-1.28a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.44a2 2 0 0 1 2-2h.18a2 2 0 0 0 1.73-1l.25-.43a2 2 0 0 0 0-2l-.08-.15a2 2 0 0 1-.73-2.73l-1.28-.78a2 2 0 0 0-2.73.73l-.08.15a2 2 0 0 1-1.74 1H22a2 2 0 0 0-2-2v-.44a2 2 0 0 0-2-2h-.18a2 2 0 0 1-1.73-1l-.25-.43a2 2 0 0 0-2-0l-.15.08a2 2 0 0 1-2.73-.73l-.78-1.28a2 2 0 0 0 .73-2.73l.15-.08a2 2 0 0 1 1-1.74V4a2 2 0 0 0 2-2h-.44z"/><circle cx="12" cy="12" r="3"/></svg>',
+            },
+            {
+                id: 'q9',
+                question: 'Do you use privacy-focused web browsers (e.g., Brave, Firefox Focus, Tor) or browser extensions that block trackers?',
+                category: 'Online Behavior & Awareness',
+                riskValue: 3,
+                tip: 'Privacy-focused browsers and extensions help prevent websites from tracking your online activity. Research and choose options that suit your needs.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb w-5 h-5 text-yellow-600"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 6c0 1.8.7 3.3 1.5 4.5 1 .8 1.5 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/><path d="M11 17H7c-2.76 0-5 2.24-5 5h14c0-2.76-2.24-5-5-5z"/></svg>',
+            },
+            {
+                id: 'q10',
+                question: 'Do you routinely back up your important data to a secure, encrypted location?',
+                category: 'Device & Software Security',
+                riskValue: 2,
+                tip: 'Regular backups protect your data from loss due to device failure, cyberattacks, or accidental deletion. Use encrypted cloud storage or external drives.',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield w-5 h-5 text-red-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+            },
+        ];
+
+        // Global variables for state
+        let answers = {};
+        let currentQuestionIndex = 0;
+        let radarChartInstance = null; // To store the Chart.js instance
+        let showResultsFlag = false; // New flag to track if results are already shown
+
+        // Get DOM elements
+        const questionSection = document.getElementById('question-section');
+        const resultsSection = document.getElementById('results-section');
+        const questionText = document.getElementById('question-text');
+        const questionIcon = document.getElementById('question-icon');
+        const questionProgress = document.getElementById('question-progress');
+        const yesButton = document.getElementById('yes-button');
+        const noButton = document.getElementById('no-button');
+        const scoreDisplay = document.getElementById('score-display');
+        const maxScoreDisplay = document.getElementById('max-score-display');
+        const tipsSection = document.getElementById('tips-section');
+        const resetButton = document.getElementById('reset-button');
+        const radarChartCanvas = document.getElementById('radarChart');
+
+        /**
+         * Renders the current question on the screen.
+         */
+        function renderQuestion() {
+            const currentQuestion = questionsData[currentQuestionIndex];
+            if (currentQuestion) {
+                questionText.textContent = currentQuestion.question;
+                questionIcon.innerHTML = currentQuestion.icon; // Set innerHTML for SVG icon
+                questionProgress.textContent = `Question ${currentQuestionIndex + 1} of ${questionsData.length}`;
+            }
+        }
+
+        /**
+         * Calculates the score, tips, and radar chart data based on user answers.
+         * @returns {object} An object containing score, maxScore, tips, and radarChartData.
+         */
+        function calculateResults() {
+            let currentScore = 0;
+            let totalMaxScore = 0;
+            const generatedTips = [];
+            const categoryRiskMap = {};
+
+            // Initialize category risk map with maxRisk for all categories
+            questionsData.forEach(q => {
+                if (!categoryRiskMap[q.category]) {
+                    categoryRiskMap[q.category] = { maxRisk: 0, userRisk: 0 };
+                }
+                categoryRiskMap[q.category].maxRisk += q.riskValue;
+            });
+
+            // Calculate score, tips, and user risk per category based on answers
+            questionsData.forEach(q => {
+                totalMaxScore += q.riskValue; // Each question contributes its riskValue to the max score
+
+                // If the question has been answered
+                if (answers.hasOwnProperty(q.id)) {
+                    if (answers[q.id]) { // If answer is 'Yes'
+                        currentScore += q.riskValue; // Add riskValue to score (meaning risk is avoided)
+                    } else { // If answer is 'No'
+                        generatedTips.push(q.tip); // Add the tip
+                        categoryRiskMap[q.category].userRisk += q.riskValue; // Add riskValue to user's risk for that category
+                    }
+                } else {
+                    // If a question hasn't been answered yet, it doesn't contribute to the score calculation
+                    // For the radar chart, we'll treat unanswered questions as 'No' for risk aggregation
+                    // when results are displayed, to reflect potential areas for improvement.
+                    // This scenario should ideally not happen if all questions are answered before results.
+                }
+            });
+
+            // Prepare data for the radar chart
+            const radarLabels = Object.keys(categoryRiskMap);
+            const yourScores = radarLabels.map(category => {
+                const categoryInfo = categoryRiskMap[category];
+                // Your score for a category is maxRisk - userRisk (higher is better)
+                return categoryInfo.maxRisk - categoryInfo.userRisk;
+            });
+            const maxScores = radarLabels.map(category => categoryRiskMap[category].maxRisk);
+
+            const radarChartData = {
+                labels: radarLabels,
+                datasets: [
+                    {
+                        label: 'Your Score',
+                        data: yourScores,
+                        backgroundColor: 'rgba(139, 92, 246, 0.6)', // Indigo-500 equivalent with opacity
+                        borderColor: 'rgba(139, 92, 246, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(139, 92, 246, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(139, 92, 246, 1)'
+                    },
+                    {
+                        label: 'Max Score',
+                        data: maxScores,
+                        backgroundColor: 'rgba(74, 222, 128, 0.2)', // Green-400 equivalent with opacity
+                        borderColor: 'rgba(74, 222, 128, 1)',
+                        borderDash: [5, 5], // Dashed line for max score
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(74, 222, 128, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(74, 222, 128, 1)'
+                    }
+                ]
+            };
+
+            return {
+                score: currentScore,
+                maxScore: totalMaxScore,
+                tips: generatedTips,
+                radarChartData: radarChartData,
+            };
+        }
+
+        /**
+         * Renders the results section, including score, tips, and radar chart.
+         */
+        function renderResults() {
+            const { score, maxScore, tips, radarChartData } = calculateResults();
+
+            scoreDisplay.textContent = score;
+            maxScoreDisplay.textContent = ` / ${maxScore}`;
+
+            // Render tips
+            tipsSection.innerHTML = ''; // Clear previous tips
+            if (tips.length > 0) {
+                const tipsTitle = document.createElement('h3');
+                tipsTitle.className = 'text-xl sm:text-2xl font-semibold text-center text-indigo-700 mb-4';
+                tipsTitle.textContent = 'Personalized Improvement Tips:';
+                tipsSection.appendChild(tipsTitle);
+
+                const tipsList = document.createElement('ul');
+                tipsList.className = 'list-disc list-inside bg-blue-50 rounded-xl p-5 sm:p-6 mb-8 text-blue-800 space-y-3';
+                tips.forEach((tip, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'flex items-start';
+                    listItem.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right w-5 h-5 mr-2 mt-1 flex-shrink-0"><path d="m9 18 6-6-6-6"/></svg><span>${tip}</span>`;
+                    tipsList.appendChild(listItem);
+                });
+                tipsSection.appendChild(tipsList);
+            }
+
+            // Render Radar Chart using Chart.js
+            if (radarChartInstance) {
+                radarChartInstance.destroy(); // Destroy existing chart instance if any
+                radarChartInstance = null; // Explicitly set to null after destruction
+            }
+            const ctx = radarChartCanvas.getContext('2d');
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: radarChartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Allow canvas to fill container
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#4f46e5', // Indigo-600
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    // Ensure the value is a number before rounding
+                                    const value = context.parsed.r;
+                                    label += typeof value === 'number' && !isNaN(value) ? Math.round(value * 100) / 100 : 'N/A';
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: '#e0e7ff' // Indigo-100
+                            },
+                            grid: {
+                                color: '#e0e7ff' // Indigo-100
+                            },
+                            pointLabels: {
+                                color: '#4f46e5', // Indigo-600
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            },
+                            // Removed ticks object entirely to prevent RangeError from internal formatting
+                            beginAtZero: true,
+                            max: Math.max(1, ...radarChartData.datasets[1].data) + 1 // Keep this max calculation
+                        }
+                    }
+                }
+            });
+
+            // Show results section and hide question section with transition
+            questionSection.style.opacity = '0';
+            setTimeout(() => {
+                questionSection.style.display = 'none';
+                resultsSection.style.display = 'block';
+                resultsSection.style.opacity = '1';
+            }, 500); // Match transition duration
+        }
+
+        /**
+         * Handles user's answer to a question.
+         * @param {string} questionId - The ID of the question.
+         * @param {boolean} answer - True for 'Yes', False for 'No'.
+         */
+        function handleAnswer(questionId, answer) {
+            answers[questionId] = answer;
+
+            if (currentQuestionIndex < questionsData.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else if (!showResultsFlag) { // Only render results if not already shown
+                showResultsFlag = true;
+                renderResults();
+            }
+            // If showResultsFlag is true, do nothing on subsequent clicks on the last question
+        }
+
+        /**
+         * Resets the scorecard to its initial state.
+         */
+        function resetScorecard() {
+            answers = {};
+            currentQuestionIndex = 0;
+            showResultsFlag = false; // Reset the flag
+
+            // Hide results section and show question section with transition
+            resultsSection.style.opacity = '0';
+            setTimeout(() => {
+                resultsSection.style.display = 'none';
+                questionSection.style.display = 'block';
+                questionSection.style.opacity = '1';
+                renderQuestion(); // Render the first question
+            }, 500); // Match transition duration
+        }
+
+        // Event Listeners
+        yesButton.addEventListener('click', () => handleAnswer(questionsData[currentQuestionIndex].id, true));
+        noButton.addEventListener('click', () => handleAnswer(questionsData[currentQuestionIndex].id, false));
+        resetButton.addEventListener('click', resetScorecard);
+
+        // Initial render when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', renderQuestion);
+    </script>
+</body>
+</html>
